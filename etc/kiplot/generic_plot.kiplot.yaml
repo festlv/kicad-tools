@@ -38,6 +38,14 @@ outputs:
     layers:
       - layer: F.Cu
         suffix: F_Cu
+      - layer: In1.Cu
+        suffix: In1_Cu
+      - layer: In2.Cu
+        suffix: In2_Cu
+      - layer: In3.Cu
+        suffix: In3_Cu
+      - layer: In4.Cu
+        suffix: In4_Cu
       - layer: F.SilkS
         suffix: F_SilkS
       - layer: F.Fab
@@ -177,7 +185,33 @@ outputs:
         suffix: Edge_Cuts
 
 
-  - name: SVG
+  - name: SVG-top
+    comment: "SVG files"
+    type: svg
+    dir: layout/svg
+    options:
+      exclude_edge_layer: false
+      exclude_pads_from_silkscreen: false
+      use_aux_axis_as_origin: false
+      plot_sheet_reference: false
+      plot_footprint_refs: true
+      plot_footprint_values: true
+      force_plot_invisible_refs_vals: false
+      tent_vias: true
+      check_zone_fills: true
+
+      # SVG options
+      line_width: 0.25
+      drill_marks: full
+      mirror_plot: false
+      negative_plot: false
+    layers:
+      - layer: F.Fab
+        suffix: F_Fab
+      - layer: Edge.Cuts 
+        suffix: Edge_Cuts
+
+  - name: SVG-bot
     comment: "SVG files"
     type: svg
     dir: layout/svg
@@ -196,33 +230,12 @@ outputs:
       line_width: 0.25
       drill_marks: full
       mirror_plot: true
-      negative_plot: true
+      negative_plot: false
     layers:
-      - layer: F.Cu
-        suffix: F_Cu
-      - layer: F.SilkS
-        suffix: F_SilkS
-      - layer: F.Fab
-        suffix: F_Fab
-      - layer: F.Paste
-        suffix: F_Paste
-      - layer: F.Mask
-        suffix: F_Mask
-      - layer: B.Cu
-        suffix: B_Cu
-      - layer: B.SilkS
-        suffix: B_SilkS
       - layer: B.Fab
         suffix: B_Fab
-      - layer: B.Paste
-        suffix: B_Paste
-      - layer: B.Mask
-        suffix: B_Mask
-      - layer: Edge.Cuts 
-        suffix: Edge_Cuts
 
-
-  - name: PDF
+  - name: PDF-top
     comment: "PDF files"
     type: pdf
     dir: layout/pdf
@@ -253,6 +266,30 @@ outputs:
         suffix: F_Paste
       - layer: F.Mask
         suffix: F_Mask
+      - layer: Edge.Cuts 
+        suffix: Edge_Cuts
+
+  - name: PDF-bot
+    comment: "PDF files"
+    type: pdf
+    dir: layout/pdf
+    options:
+      exclude_edge_layer: false
+      exclude_pads_from_silkscreen: false
+      use_aux_axis_as_origin: false
+      plot_sheet_reference: false
+      plot_footprint_refs: true
+      plot_footprint_values: true
+      force_plot_invisible_refs_vals: false
+      tent_vias: true
+      check_zone_fills: true
+
+      # PDF options
+      drill_marks: small
+      mirror_plot: true
+      negative_plot: false
+      line_width: 0.01
+    layers:
       - layer: B.Cu
         suffix: B_Cu
       - layer: B.SilkS
@@ -263,6 +300,12 @@ outputs:
         suffix: B_Paste
       - layer: B.Mask
         suffix: B_Mask
-      - layer: Edge.Cuts 
-        suffix: Edge_Cuts
 
+  - name: 'position'
+    comment: "Pick and place file"
+    type: position
+    dir: pnp
+    options:
+      format: ASCII   # CSV or ASCII format
+      units: millimeters  # millimeters or inches
+      separate_files_for_front_and_back: true

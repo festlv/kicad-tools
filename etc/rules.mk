@@ -17,6 +17,7 @@ BOARD_SNAPSHOT_LABEL := $(BOARD)-$(shell git describe --all)
 OUTPUT_BASEDIR := out/$(BOARD_SNAPSHOT_LABEL)
 OUTPUT_PATH := $(PROJECT_ABS_PATH)/$(OUTPUT_BASEDIR)
 
+DATE := $(shell date '+%F')
 
 export DOCKER_VOLUMES := --volume $(DOCKER_VISIBLE_PATH):/kicad-project: \
    		  --volume $(OUTPUT_PATH):/output: 
@@ -30,8 +31,8 @@ DOCKER_RUN := $(TOOLS_HOME)/bin/kicad-docker-run
 
 
 
-all: 
-	@echo "This project does not have an 'all' target. You probably want 'fabrication-outputs'"
+all: fabrication-outputs
+	@echo "All done"
 
 debug:
 	@echo "BOARD=$(BOARD)"
@@ -43,14 +44,14 @@ debug:
 	@echo "PROJECT_ABS_PATH=$(PROJECT_ABS_PATH)"
 	@echo "OUTPUT_PATH=$(OUTPUT_PATH)"
 
-fabrication-outputs: dirs bom interactive-bom schematic gerbers archive
+fabrication-outputs: dirs bom interactive-bom schematic gerbers archive gerbers-archive assembly-drawings
 	@echo "Done. You can find your outputs in "
 	@echo $(OUTPUT_PATH)
 
 
 
 archive:
-	cd out && zip -r $(BOARD_SNAPSHOT_LABEL).zip $(BOARD_SNAPSHOT_LABEL)
+	cd out && zip -r $(BOARD)-$(DATE).zip $(BOARD_SNAPSHOT_LABEL)
 
 
 gerbers: dirs
@@ -59,6 +60,8 @@ gerbers: dirs
 dirs:
 	mkdir -p $(OUTPUT_PATH)
 	mkdir -p $(OUTPUT_PATH)/layout
+	mkdir -p $(OUTPUT_PATH)/assembly
+	mkdir -p $(OUTPUT_PATH)/pnp
 	mkdir -p $(OUTPUT_PATH)/bom/interactive
 	mkdir -p $(OUTPUT_PATH)/schematic
 
@@ -79,3 +82,13 @@ schematic-svg: dirs
 
 docker-shell:
 	$(DOCKER_RUN) bash
+
+
+gerbers-archive: gerbers
+	cd out/ && zip -j -r $(BOARD)-$(DATE)-gerbers.zip $(BOARD_SNAPSHOT_LABEL)/layout/gerber/
+	@echo "You can find gerber archive in "
+	@echo $(OUTPUT_PATH)/$(BOARD)-$(DATE)-gerbers.zip
+
+assembly-drawings: gerbers
+	cd $(OUTPUT_PATH) && cp layout/pdf/$(BOARD)-F_Fab.pdf assembly/ && cp layout/pdf/$(BOARD)-B_Fab.pdf assembly/
+
