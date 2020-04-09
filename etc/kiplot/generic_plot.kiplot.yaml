@@ -42,10 +42,6 @@ outputs:
         suffix: In1_Cu
       - layer: In2.Cu
         suffix: In2_Cu
-      - layer: In3.Cu
-        suffix: In3_Cu
-      - layer: In4.Cu
-        suffix: In4_Cu
       - layer: F.SilkS
         suffix: F_SilkS
       - layer: F.Fab
